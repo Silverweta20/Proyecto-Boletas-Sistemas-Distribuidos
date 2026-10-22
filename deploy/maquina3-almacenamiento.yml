@@ -1,0 +1,39 @@
+# MÁQUINA 3 - Capa de almacenamiento: PostgreSQL y Servicio de Persistencia.
+# Se levanta primero, desde la carpeta del proyecto:
+#   docker compose -f deploy/maquina3-almacenamiento.yml up -d --build
+# Puertos que deben quedar abiertos:
+#   5557 (Servicio de Persistencia)  -> hacia la máquina 2
+#   5432 (PostgreSQL)                -> hacia la máquina 1 (solo para el protocolo de pruebas)
+# Los datos de PostgreSQL quedan en un volumen de Docker en el disco local de esta máquina, no en la carpeta NFS.
+name: srb-almacenamiento
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: srb
+      POSTGRES_USER: srb
+      POSTGRES_PASSWORD: srb
+    volumes:
+      - datos-postgres:/var/lib/postgresql/data
+      - ../db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports: ["${PUERTO_BD:-5432}:5432"]
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "srb", "-d", "srb"]
+      interval: 3s
+      retries: 20
+
+  persistencia:
+    build: ..
+    command: ["java", "-cp", "srb.jar", "srb.persistencia.ServicioPersistencia"]
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/srb
+      DB_USUARIO: srb
+      DB_CLAVE: srb
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports: ["5557:5557"]
+
+volumes:
+  datos-postgres:

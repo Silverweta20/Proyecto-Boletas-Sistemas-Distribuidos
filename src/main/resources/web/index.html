@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SRB · Reserva de boletos</title>
+  <link rel="stylesheet" href="/estilos.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+<div class="app">
+
+  <aside class="menu">
+    <div class="marca">
+      <span class="logo">SRB</span>
+      <div><strong>Reserva de boletos</strong><small>Universidad de las Américas</small></div>
+    </div>
+    <nav>
+      <a href="#eventos" data-vista="eventos">Eventos</a>
+      <a href="#mis-reservas" data-vista="mis-reservas">Mis reservas</a>
+      <a href="#estado" data-vista="estado">Estado de la base de datos</a>
+      <a href="#operaciones" data-vista="operaciones">Registro de operaciones</a>
+      <span class="separador">Segunda entrega</span>
+      <a href="#modificar" data-vista="modificar">Modificar reserva <em>pronto</em></a>
+      <a href="#cancelar" data-vista="cancelar">Cancelar reserva <em>pronto</em></a>
+      <a href="#notificaciones" data-vista="notificaciones">Notificaciones <em>pronto</em></a>
+    </nav>
+    <label class="cliente">Cliente
+      <input id="cliente" value="estudiante-1" maxlength="40" autocomplete="off">
+    </label>
+  </aside>
+
+  <main>
+    <!-- ===== Eventos: consulta y reserva ===== -->
+    <section id="vista-eventos" class="vista">
+      <header class="titulo">
+        <div><h1>Eventos del mes</h1><p>Consulta de los eventos del mes y reserva de asientos.</p></div>
+        <div class="controles">
+          <input id="mes" type="month">
+          <button id="consultar">Consultar</button>
+        </div>
+      </header>
+      <div class="filtros">
+        <input id="buscar" type="search" placeholder="Buscar por nombre o código (E1, E2…)">
+        <select id="filtro">
+          <option value="todos">Todos</option>
+          <option value="libres">Con asientos libres</option>
+          <option value="agotados">Agotados</option>
+        </select>
+        <span id="conteo" class="suave"></span>
+      </div>
+      <div id="lista-eventos" class="tarjetas"><p class="suave">Cargando eventos…</p></div>
+    </section>
+
+    <!-- ===== Mis reservas ===== -->
+    <section id="vista-mis-reservas" class="vista" hidden>
+      <header class="titulo">
+        <div><h1>Mis reservas</h1><p>Reservas confirmadas desde esta página para el cliente indicado en el menú.</p></div>
+      </header>
+      <div id="lista-reservas"></div>
+    </section>
+
+    <!-- ===== Estado de la base de datos ===== -->
+    <section id="vista-estado" class="vista" hidden>
+      <header class="titulo">
+        <div><h1>Estado de la base de datos</h1><p>Ocupación de cada ocurrencia del mes, obtenida con una consulta al sistema.</p></div>
+        <div class="controles">
+          <button id="guardar-antes" class="secundario">Guardar «antes»</button>
+          <button id="actualizar-estado">Actualizar</button>
+        </div>
+      </header>
+      <div id="totales" class="totales"></div>
+      <div id="tabla-estado"></div>
+    </section>
+
+    <!-- ===== Registro de operaciones ===== -->
+    <section id="vista-operaciones" class="vista" hidden>
+      <header class="titulo">
+        <div><h1>Registro de operaciones</h1><p>Solicitudes enviadas desde esta página al Gestor de Transacciones.</p></div>
+      </header>
+      <div id="tabla-operaciones"></div>
+    </section>
+
+    <!-- ===== En construcción (segunda entrega) ===== -->
+    <section id="vista-modificar" class="vista" hidden>
+      <header class="titulo"><div><h1>Modificar reserva</h1><p>Cambiar el número de asientos o la fecha de una reserva.</p></div></header>
+      <div class="construccion">
+        <span class="etiqueta">En construcción · Segunda entrega</span>
+        <p>Permitirá cambiar los asientos de una reserva, o su fecha si el evento se repite en el mismo mes. Si no hay cupo, la reserva quedará como estaba.</p>
+        <form class="formulario" aria-disabled="true">
+          <label>Número de reserva<input disabled placeholder="Ej. 12"></label>
+          <label>Nuevos asientos<input disabled placeholder="Ej. 3"></label>
+          <label>Nueva fecha<select disabled><option>Otra ocurrencia del mismo mes</option></select></label>
+          <button type="button" disabled>Modificar</button>
+        </form>
+      </div>
+    </section>
+
+    <section id="vista-cancelar" class="vista" hidden>
+      <header class="titulo"><div><h1>Cancelar reserva</h1><p>Liberar los asientos de una reserva.</p></div></header>
+      <div class="construccion">
+        <span class="etiqueta">En construcción · Segunda entrega</span>
+        <p>La cancelación será asíncrona: el sistema la aceptará de inmediato y avisará con una notificación cuando los asientos se hayan liberado.</p>
+        <form class="formulario" aria-disabled="true">
+          <label>Número de reserva<input disabled placeholder="Ej. 12"></label>
+          <button type="button" class="peligro" disabled>Cancelar reserva</button>
+        </form>
+      </div>
+    </section>
+
+    <section id="vista-notificaciones" class="vista" hidden>
+      <header class="titulo"><div><h1>Notificaciones</h1><p>Avisos que envía el sistema.</p></div></header>
+      <div class="construccion">
+        <span class="etiqueta">En construcción · Segunda entrega</span>
+        <p>Aquí llegarán los avisos del servicio de cancelaciones cuando una cancelación se haga efectiva.</p>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- Ventana para confirmar una reserva -->
+<dialog id="dialogo-reserva">
+  <form method="dialog" id="form-reserva">
+    <h2>Reservar asientos</h2>
+    <p id="reserva-detalle" class="suave"></p>
+    <label>Cliente<input id="reserva-cliente" required maxlength="40"></label>
+    <label>Asientos<input id="reserva-asientos" type="number" min="1" value="1" required></label>
+    <div class="acciones">
+      <button value="cancelar" formnovalidate class="secundario">Volver</button>
+      <button id="confirmar-reserva" value="confirmar">Confirmar reserva</button>
+    </div>
+  </form>
+</dialog>
+
+<div id="avisos" class="avisos" aria-live="polite"></div>
+</body>
+</html>

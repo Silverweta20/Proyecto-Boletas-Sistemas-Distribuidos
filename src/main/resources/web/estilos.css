@@ -1,0 +1,120 @@
+/* Estilos de la página del SRB. Colores claros y oscuros según la preferencia del sistema. */
+:root {
+  --fondo: #f4f6f9;
+  --panel: #ffffff;
+  --texto: #1d2733;
+  --suave: #637083;
+  --borde: #dde3ea;
+  --principal: #1f5fa8;
+  --principal-texto: #ffffff;
+  --bien: #1c7c4a;
+  --mal: #b3261e;
+  --barra: #e6ebf1;
+  --aviso-construccion: #fff6dd;
+  --cambio: #fff6dd;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fondo: #12161c;
+    --panel: #1b2129;
+    --texto: #e6eaf0;
+    --suave: #98a3b3;
+    --borde: #2c3542;
+    --principal: #5b9be6;
+    --principal-texto: #0b1220;
+    --bien: #5cc98b;
+    --mal: #f08a82;
+    --barra: #2a323d;
+    --aviso-construccion: #3a3220;
+    --cambio: #3a3220;
+  }
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; font-family: "Segoe UI", system-ui, sans-serif; background: var(--fondo); color: var(--texto); }
+h1 { margin: 0 0 4px; font-size: 1.6rem; }
+h2 { margin: 0 0 8px; }
+h3 { margin: 0; font-size: 1.05rem; }
+p { margin: 0; }
+.suave { color: var(--suave); }
+
+/* Estructura: menú lateral y contenido */
+.app { display: grid; grid-template-columns: 250px 1fr; min-height: 100vh; }
+.menu { background: var(--panel); border-right: 1px solid var(--borde); padding: 20px 14px; display: flex; flex-direction: column; gap: 18px; }
+.marca { display: flex; gap: 10px; align-items: center; }
+.marca small { display: block; color: var(--suave); }
+.logo { background: var(--principal); color: var(--principal-texto); font-weight: 700; border-radius: 8px; padding: 8px 7px; }
+nav { display: flex; flex-direction: column; gap: 2px; }
+nav a { color: var(--texto); text-decoration: none; padding: 9px 10px; border-radius: 6px; }
+nav a:hover { background: var(--fondo); }
+nav a.activo { background: var(--principal); color: var(--principal-texto); }
+nav a em { font-style: normal; font-size: .72rem; border: 1px solid currentColor; border-radius: 10px; padding: 0 6px; margin-left: 4px; opacity: .8; }
+.separador { margin: 14px 10px 4px; font-size: .75rem; text-transform: uppercase; letter-spacing: .05em; color: var(--suave); }
+.cliente { margin-top: auto; display: flex; flex-direction: column; gap: 4px; font-size: .85rem; color: var(--suave); }
+
+main { padding: 28px; max-width: 1150px; width: 100%; }
+.titulo { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; margin-bottom: 18px; }
+.titulo p { color: var(--suave); }
+.controles, .filtros, .acciones { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.filtros { margin-bottom: 14px; }
+.filtros input { flex: 1; min-width: 200px; }
+
+/* Controles */
+input, select, button { font: inherit; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--borde); background: var(--panel); color: var(--texto); }
+button { background: var(--principal); color: var(--principal-texto); border-color: var(--principal); cursor: pointer; font-weight: 600; }
+button:disabled { opacity: .5; cursor: not-allowed; }
+button.secundario { background: var(--panel); color: var(--texto); border-color: var(--borde); }
+button.peligro { background: var(--mal); border-color: var(--mal); }
+
+/* Tarjetas de eventos */
+.tarjetas { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 14px; }
+.tarjeta { background: var(--panel); border: 1px solid var(--borde); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.tarjeta-cabecera { display: flex; justify-content: space-between; align-items: center; }
+.codigo { font-size: .8rem; color: var(--suave); border: 1px solid var(--borde); border-radius: 10px; padding: 1px 8px; }
+.ocurrencia { display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; align-items: center; border-top: 1px solid var(--borde); padding-top: 10px; }
+.ocurrencia-datos { display: flex; flex-direction: column; }
+.ocurrencia-datos strong::first-letter { text-transform: uppercase; }
+.ocupacion { font-size: .8rem; color: var(--suave); display: flex; flex-direction: column; gap: 4px; }
+.barra { height: 7px; background: var(--barra); border-radius: 4px; overflow: hidden; }
+.barra-relleno { height: 100%; background: var(--principal); }
+.barra-relleno.casi-lleno { background: var(--mal); }
+
+/* Tablas */
+table { width: 100%; border-collapse: collapse; background: var(--panel); border: 1px solid var(--borde); border-radius: 10px; overflow: hidden; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--borde); font-size: .9rem; }
+th { color: var(--suave); font-weight: 600; }
+td.bien { color: var(--bien); }
+td.mal { color: var(--mal); }
+td.numero { text-align: right; }
+tr.cambio td { background: var(--cambio); }
+
+/* Totales del estado de la base */
+.totales { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-bottom: 16px; }
+.total { background: var(--panel); border: 1px solid var(--borde); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; }
+.total strong { font-size: 1.7rem; }
+
+/* Secciones en construcción */
+.construccion { background: var(--panel); border: 1px dashed var(--borde); border-radius: 10px; padding: 22px; display: flex; flex-direction: column; gap: 14px; max-width: 640px; }
+.etiqueta { align-self: flex-start; background: var(--aviso-construccion); border-radius: 12px; padding: 3px 10px; font-size: .8rem; font-weight: 600; }
+.formulario { display: flex; flex-direction: column; gap: 10px; opacity: .6; }
+.formulario label, dialog label { display: flex; flex-direction: column; gap: 4px; font-size: .85rem; color: var(--suave); }
+
+/* Ventana de reserva */
+dialog { border: 1px solid var(--borde); border-radius: 12px; background: var(--panel); color: var(--texto); padding: 22px; width: min(440px, 92vw); }
+dialog::backdrop { background: rgba(0, 0, 0, .45); }
+dialog form { display: flex; flex-direction: column; gap: 12px; }
+.acciones { justify-content: flex-end; }
+
+/* Avisos */
+.avisos { position: fixed; right: 18px; bottom: 18px; display: flex; flex-direction: column; gap: 8px; z-index: 10; }
+.aviso { background: var(--bien); color: #fff; padding: 10px 14px; border-radius: 8px; max-width: 360px; box-shadow: 0 4px 14px rgba(0, 0, 0, .2); }
+.aviso.error { background: var(--mal); }
+.error-texto { color: var(--mal); }
+
+/* Pantallas pequeñas */
+@media (max-width: 760px) {
+  .app { grid-template-columns: 1fr; }
+  .menu { border-right: 0; border-bottom: 1px solid var(--borde); }
+  main { padding: 16px; }
+  .ocurrencia { grid-template-columns: 1fr; }
+}

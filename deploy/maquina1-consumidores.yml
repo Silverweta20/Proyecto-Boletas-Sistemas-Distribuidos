@@ -1,0 +1,36 @@
+# MÁQUINA 1 - Capa de consumidores: página web y clientes (generador de carga y ejecutor de casos de prueba).
+# Se levanta al final, desde la carpeta del proyecto:
+#   docker compose -f deploy/maquina1-consumidores.yml up -d --build web       página web
+#   docker compose -f deploy/maquina1-consumidores.yml run --rm clientes       generador de carga
+# Usa IP_NEGOCIO de deploy/.env. Los parámetros de la carga se pasan con -e (ver README.md).
+# Puerto que debe quedar abierto:
+#   8090 (página web) -> hacia los navegadores que la vayan a usar
+name: srb-consumidores
+
+services:
+  web:
+    build: ..
+    command: ["java", "-cp", "srb.jar", "srb.web.ServidorWeb"]
+    environment:
+      URL_GESTOR: tcp://${IP_NEGOCIO:?Falta IP_NEGOCIO en deploy/.env}:5555
+      MES: ${MES:-2026-10}
+    ports: ["${PUERTO_WEB:-8090}:8080"]
+
+  # Clientes: no arrancan con "up"; se ejecutan a pedido con "run"
+  clientes:
+    build: ..
+    profiles: ["herramientas"]
+    command: ["java", "-cp", "srb.jar", "srb.clientes.GeneradorCarga"]
+    environment:
+      URL_GESTOR: tcp://${IP_NEGOCIO:?Falta IP_NEGOCIO en deploy/.env}:5555
+      MES: ${MES:-2026-10}
+      CLIENTES: ${CLIENTES:-3}
+      CLIENTES_SOLO_CONSULTA: ${CLIENTES_SOLO_CONSULTA:-2}
+      SOLICITUDES_POR_MINUTO: ${SOLICITUDES_POR_MINUTO:-20}
+      PORCENTAJE_CONSULTA: ${PORCENTAJE_CONSULTA:-50}
+      DURACION_SEGUNDOS: ${DURACION_SEGUNDOS:-120}
+      ARQUITECTURA: base
+      ARCHIVO_METRICAS: /app/resultados/metricas.csv
+    volumes:
+      - ../resultados:/app/resultados
+      - ../casos:/app/casos:ro

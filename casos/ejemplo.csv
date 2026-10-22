@@ -1,0 +1,8 @@
+cliente,operacion,mes,ocurrencia,asientos
+ana,consulta,2026-10,,
+ana,reserva,,1,2
+luis,reserva,,1,98
+maria,reserva,,1,1
+luis,reserva,,51,3
+maria,consulta,2026-10,,
+ana,cancelacion,,,

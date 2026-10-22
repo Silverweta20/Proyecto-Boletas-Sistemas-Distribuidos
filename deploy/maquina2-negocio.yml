@@ -1,0 +1,22 @@
+# MÁQUINA 2 - Capa de negocio: Gestor de Transacciones y Servicio de Procesamiento de Reservas, Modificaciones y Consultas.
+# Se levanta después de la máquina 3, desde la carpeta del proyecto:
+#   docker compose -f deploy/maquina2-negocio.yml up -d --build
+# Usa IP_ALMACENAMIENTO de deploy/.env.
+# Puerto que debe quedar abierto:
+#   5555 (Gestor de Transacciones)  -> hacia la máquina 1
+name: srb-negocio
+
+services:
+  procesamiento:
+    build: ..
+    command: ["java", "-cp", "srb.jar", "srb.procesamiento.ServicioProcesamiento"]
+    environment:
+      URL_PERSISTENCIA: tcp://${IP_ALMACENAMIENTO:?Falta IP_ALMACENAMIENTO en deploy/.env}:5557
+
+  gestor-transacciones:
+    build: ..
+    command: ["java", "-cp", "srb.jar", "srb.gestor.GestorTransacciones"]
+    environment:
+      URL_PROCESAMIENTO: tcp://procesamiento:5556
+    depends_on: [procesamiento]
+    ports: ["5555:5555"]
